@@ -6,21 +6,21 @@ var margin = {top: 15 + (char_span), right: 30, bottom: 80, left: 30},
     height = 280 - margin.top - margin.bottom;
     curtain_height = height + (char_span * 2)
 
-var parse = d3.time.format("%m/%d").parse;
+var parse = d3.time.format('%m/%d').parse;
 
 var x = d3.time.scale().range([0, width]),
     y = d3.scale.linear().range([height, 0]),
-    xAxis = d3.svg.axis().scale(x).tickSize(-height).tickSubdivide(true).tickFormat(d3.time.format("%m/%d")),
-    yAxis = d3.svg.axis().scale(y).ticks(4).orient("left");
+    xAxis = d3.svg.axis().scale(x).tickSize(-height).tickSubdivide(true).tickFormat(d3.time.format('%m/%d')),
+    yAxis = d3.svg.axis().scale(y).ticks(4).orient('left');
 
 var area = d3.svg.area()
-    .interpolate("monotone")
+    .interpolate('monotone')
     .x(function(d) { return x(d.date); })
     .y0(height)
-    .y1(function(d) { return y(d["rate"]); });
+    .y1(function(d) { return y(d['rate']); });
 
 var line = d3.svg.line()
-        .interpolate("monotone")
+        .interpolate('monotone')
         .x(function(d) {
             return x(d.date);
         })
@@ -30,7 +30,8 @@ var line = d3.svg.line()
             }
       });
 
-d3.csv(DATA_PATH + "data.csv", type, function(error, data) {
+d3.csv(DATA_PATH + 'data.csv', type, function(error, data) {
+    d3.csv(DATA_PATH + 'cope_with_JPN.csv', type, function(error, data) {
     if (error) throw error;
 
     var all = data.map(function(d) {
@@ -71,7 +72,7 @@ d3.csv(DATA_PATH + "data.csv", type, function(error, data) {
         }),
     ]).nice();
 
-    var legend = d3.select("#legend")
+    var legend = d3.select('#legend')
                     .selectAll('.flex-box')
                     .data(CANDIDATES)
                     .enter()
@@ -79,7 +80,7 @@ d3.csv(DATA_PATH + "data.csv", type, function(error, data) {
                     .attr('class', 'flex-box');
 
     
-    var targetDate = d3.select("#legend")
+    var targetDate = d3.select('#legend')
                         .append('div')
                         .attr('id', 'target-date');
 
@@ -105,24 +106,24 @@ d3.csv(DATA_PATH + "data.csv", type, function(error, data) {
         });
 
 
-    var svg = d3.select("#draw-area")
-        .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+    var svg = d3.select('#draw-area')
+        .append('svg')
+        .attr('width', width + margin.left + margin.right)
+        .attr('height', height + margin.top + margin.bottom)
+        .append('g')
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
 
-    svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + (height + char_span) + ")")
+    svg.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate(0,' + (height + char_span) + ')')
         .call(xAxis)
-        .selectAll("text")    
-        .attr("transform", function(d) {
-            return "rotate(-30)" 
+        .selectAll('text')    
+        .attr('transform', function(d) {
+            return 'rotate(-30)' 
         });
 
-    svg.append("g")
-      .attr("class", "y axis")
+    svg.append('g')
+      .attr('class', 'y axis')
       .call(yAxis);
 
 
@@ -148,7 +149,7 @@ var nearest_line = 0;
         })
         .attr('y2', height)
         .attr('stroke-width', 2)
-        .attr("opacity", function (d) {
+        .attr('opacity', function (d) {
             if (d.date > Date.now() && nearest_line == 0)  {
                 nearest_line = 1;
                 return 1;
@@ -180,7 +181,7 @@ var nearest_line = 0;
             actionEvent(this, d);
         })
         .attr('stroke-width', 1)
-        .attr("opacity", 0);
+        .attr('opacity', 0);
 
     
     var nearest_under_line = 0;
@@ -211,7 +212,7 @@ var nearest_line = 0;
             return 0 - (char_span / 2) + 8;
         })
         .attr('stroke-width', 2)
-        .attr("opacity", function (d) {
+        .attr('opacity', function (d) {
             if (d.date > Date.now() && nearest_under_line == 0)  {
                 nearest_under_line = 1;
                 return 1;
@@ -238,7 +239,7 @@ var nearest_line = 0;
         })
         .attr('height', 30)
         .attr('width', 80)
-        .attr("opacity", function (d) {
+        .attr('opacity', function (d) {
             if (d.date > Date.now() && nearest_name == 0)  {
                 nearest_name = 1;
                 return 1;
@@ -290,7 +291,7 @@ var nearest_line = 0;
                 .style('opacity', 0)
                 .remove()
             })
-            .tween("rates", tween_values);
+            .tween('rates', tween_values);
 
     t.select('rect.curtain')
         .attr('width', 0);
@@ -312,17 +313,18 @@ var nearest_line = 0;
             }
         };
     }
+    });
 });
 
 function type(d) {
-    d.date = Date.parse(d["date"]);
+    d.date = Date.parse(d['date']);
     return d;
 }
 
 function actionEvent(line, d) {
     d3.selectAll('.guide').attr('opacity', 0);
     if (d.value.Trump > 0 && d.value.Clinton > 0) {
-        d3.select(line).attr("opacity", 1);
+        d3.select(line).attr('opacity', 1);
         for (key in d.value){
             d3.select('#approval-rate-' + key)
                 .text(d.value[key] + '%');
